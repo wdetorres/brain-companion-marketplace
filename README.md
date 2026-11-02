@@ -1,6 +1,6 @@
 # Brain Companion marketplace
 
-Four portable workflows for your own [Brain Companion](https://github.com/wdetorres/brain-companion) service:
+Four portable workflows bundled with the hosted [Brain Companion](https://brain.wilsondetorres.com) MCP:
 
 | Skill | Purpose |
 |---|---|
@@ -9,9 +9,27 @@ Four portable workflows for your own [Brain Companion](https://github.com/wdetor
 | `brain-review` | Review authorized pending work. |
 | `brain-maintain` | Check health or perform authorized maintenance. |
 
-This repository distributes the plugin. The application, MCP server and canonical skill source live in [brain-companion](https://github.com/wdetorres/brain-companion). Bring a Brain endpoint you control; no hosted account or shared Brain is supplied here.
+The plugin connects to `https://brain.wilsondetorres.com/mcp` through your client's OAuth flow. **Owner-only preview:** this deployment currently accepts only its configured owner's Google account. Other users cannot onboard to it yet; use the custom-endpoint route below for a Brain deployment you control. Publishing this URL does not grant access to the Brain.
 
-## Bundle your MCP connection with the skills
+The application, MCP server and canonical skill source remain in [brain-companion](https://github.com/wdetorres/brain-companion).
+
+## Install the hosted bundle
+
+The public catalog contains `brain-workflows` version `0.2.0`: four skills plus the `brain-companion` MCP server.
+
+```sh
+# Claude Code
+claude plugin marketplace add wdetorres/brain-companion-marketplace
+claude plugin install brain-workflows@brain-companion
+
+# Codex
+codex plugin marketplace add wdetorres/brain-companion-marketplace
+codex plugin add brain-workflows@brain-companion
+```
+
+Complete owner sign-in and consent in that client. Existing users of the skills-only `0.1.0` package should refresh the marketplace and update the plugin to receive the connector. Reconcile an existing manual connection to this same endpoint rather than keeping duplicate connections or copying its tokens.
+
+## Use your own MCP endpoint
 
 With Git and Python 3 installed:
 
@@ -38,20 +56,6 @@ codex plugin add brain-companion@brain-companion-local
 ```
 
 Keep the generated directory available for future marketplace refreshes. `dist/` is ignored by Git because its configuration belongs to you. Rebuild into a new directory; the builder refuses to overwrite an existing package. Discard an incomplete build if the command fails. Choose one installation route to avoid duplicate skills.
-
-## Already connected? Install just the skills
-
-The public repository catalog contains `brain-workflows`, which reuses an existing Brain MCP connection and has no endpoint configured:
-
-```sh
-# Claude Code
-claude plugin marketplace add wdetorres/brain-companion-marketplace
-claude plugin install brain-workflows@brain-companion
-
-# Codex
-codex plugin marketplace add wdetorres/brain-companion-marketplace
-codex plugin add brain-workflows@brain-companion
-```
 
 Installation, OAuth and successful tool calls are separate checks. In a fresh session, verify the four skills, authenticate with the intended Brain owner, then call only `brain_status`, bounded `search` and `inspect` to confirm the expected Brain and policy. Installing these skills does not authorize writes or activate a collector.
 

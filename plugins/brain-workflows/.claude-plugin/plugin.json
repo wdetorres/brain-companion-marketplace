@@ -1,8 +1,9 @@
 {
   "name": "brain-workflows",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Brain Companion contributors"
   },
-  "description": "Recall, capture, review and maintain an owner-authorized Brain through its existing MCP connection."
+  "description": "Owner-only preview: four Brain workflows and the hosted Brain Companion MCP. Only the configured service owner can authenticate.",
+  "mcpServers": "./.mcp.json"
 }

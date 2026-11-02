@@ -3,7 +3,7 @@
   "owner": {
     "name": "Brain Companion contributors"
   },
-  "description": "Portable Brain workflows for your own Brain Companion connection.",
+  "description": "Owner-only preview: four Brain workflows bundled with the hosted Brain Companion MCP.",
   "plugins": [
     {
       "name": "brain-workflows",

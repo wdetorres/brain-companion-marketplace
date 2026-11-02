@@ -31,6 +31,8 @@ class PackagingTests(unittest.TestCase):
         }
         actual = {path.relative_to(self.output).as_posix() for path in self.output.rglob("*") if path.is_file()}
         self.assertEqual(actual, expected)
+        for name in actual:
+            self.assertNotIn(b"brain.wilsondetorres.com", (self.output / name).read_bytes())
         for name in FILES:
             self.assertEqual((self.output / plugin / name).read_bytes(), (ROOT / "plugins/brain-workflows" / name).read_bytes())
         manifest = json.loads((self.output / plugin / ".claude-plugin/plugin.json").read_text())
@@ -64,16 +66,22 @@ class PackagingTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertFalse(self.output.exists())
 
-    def test_source_snapshot_is_complete_and_has_no_personal_configuration(self):
+    def test_source_snapshot_and_hosted_connection_have_separate_scope(self):
         source = json.loads((ROOT / "source.json").read_text())
         self.assertEqual(set(source["files"]), set(FILES))
         directory = ROOT / "plugins/brain-workflows"
-        self.assertEqual({p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}, set(FILES) | {".claude-plugin/plugin.json"})
+        self.assertEqual({p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}, set(FILES) | {".claude-plugin/plugin.json", ".mcp.json"})
         for name, digest in source["files"].items():
             content = (directory / name).read_bytes()
             self.assertEqual(hashlib.sha256(content).hexdigest(), digest)
             self.assertNotRegex(content.decode(), r"/Users/|/home/box|wilsondetorres|brain-harness|Bearer |AUTO_ACCEPT")
-        self.assertEqual(set(json.loads((directory / ".claude-plugin/plugin.json").read_text())), {"name", "version", "author", "description"})
+        manifest = json.loads((directory / ".claude-plugin/plugin.json").read_text())
+        self.assertEqual(set(manifest), {"name", "version", "author", "description", "mcpServers"})
+        self.assertEqual(manifest["mcpServers"], "./.mcp.json")
+        self.assertIn("Owner-only preview", manifest["description"])
+        self.assertEqual(json.loads((directory / ".mcp.json").read_text()), {
+            "mcpServers": {"brain-companion": {"type": "http", "url": "https://brain.wilsondetorres.com/mcp"}},
+        })
 
 
 if __name__ == "__main__":

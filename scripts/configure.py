@@ -35,7 +35,7 @@ def build(output: Path, mcp_url: str) -> None:
         raise FileExistsError("Choose a new output directory; existing packages are never overwritten")
     source = ROOT / "plugins/brain-workflows"
     manifest = json.loads((source / ".claude-plugin/plugin.json").read_text())
-    if set(manifest) != {"name", "version", "author", "description"} or manifest["name"] != "brain-workflows":
+    if set(manifest) != {"name", "version", "author", "description", "mcpServers"} or manifest["name"] != "brain-workflows" or manifest["mcpServers"] != "./.mcp.json":
         raise ValueError("Review changed plugin metadata before exporting it")
     plugin = "plugins/brain-companion"
     entries = {}
@@ -49,6 +49,7 @@ def build(output: Path, mcp_url: str) -> None:
     configs = {
         f"{plugin}/.claude-plugin/plugin.json": {
             **manifest, "name": "brain-companion", "mcpServers": "./.mcp.json",
+            "description": "Four Brain workflows with your owner-authorized Brain Companion MCP connection.",
         },
         f"{plugin}/.mcp.json": {"mcpServers": {"brain-companion": {"type": "http", "url": mcp_url}}},
         ".claude-plugin/marketplace.json": {
