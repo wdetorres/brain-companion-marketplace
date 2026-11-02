@@ -1,16 +1,16 @@
 {
   "repository": "https://github.com/wdetorres/brain-companion",
-  "revision": "d6a6e002c8b8920b131c2e843dfc12457a3f4435",
+  "revision": "6f6b97439092fde0c0942d7f6503789ae21f56fc",
   "files": {
-    "skills/brain-capture/SKILL.md": "b82c29ddc81b1aa485420c65385a2929f9354baba08fd375358c6f4a7bc9dacc",
+    "skills/brain-capture/SKILL.md": "b398024f910834e60052bf95c725aac54075991430e3c68fbb536d00a09e0596",
     "skills/brain-capture/agents/openai.yaml": "2810faf12839dc830ea3a041bc0c5bc5036092916649aa51268f6a6386560564",
-    "skills/brain-capture/references/write-outcomes.md": "d03c1f59d2d56f009b8dd6d7c12286d2da23ecb671b1c28ea7308c11f05f7d0c",
-    "skills/brain-maintain/SKILL.md": "90b6c83f0e884e5d6616d710cd1be123c780c3b74e57ccf62f714e88052259c0",
+    "skills/brain-capture/references/write-outcomes.md": "8f376b594b496eb6b58d6d101ef97013194aaa470475875eb3f618725af32bfc",
+    "skills/brain-maintain/SKILL.md": "d668f9af4a2e39566d1a9d9d14a50df5bb2a2735cf2b8915b4f1fe29fab4283c",
     "skills/brain-maintain/agents/openai.yaml": "5daa1c71a5bc8e2d4bb00d92e6b557b6e86350dd6f2ae7983409a11c81b82969",
-    "skills/brain-recall/SKILL.md": "abb25852f8980dfcbedf72612ebe14df85de0d48813403dc1f4b4cf5bab10e54",
+    "skills/brain-recall/SKILL.md": "447034d267e8b731a3d736a800fefb0879e9d667227cb8e87ad0730deffecdb4",
     "skills/brain-recall/agents/openai.yaml": "2a43e90a6309ac238f84ec108c9385c3da621d0dc5574ee7249a9d8690e956bf",
-    "skills/brain-review/SKILL.md": "8e337ce4ee5c428efee16e63544430376ffca9125b296c4bd28d2c421100003a",
+    "skills/brain-review/SKILL.md": "1e6bd99693420cb6dbbfb15f600a6ba3875037c22a3713b219dcf36c9086c1a1",
     "skills/brain-review/agents/openai.yaml": "c3b0dccd0731a0bf66df16482c5396e7c037d661db2646c658c7a7f00118ead8",
-    "skills/brain-review/references/review-actions.md": "698628d9d9774f25edf27ab8d9110a86ad6c331d5d71ff5c9b9a52dfb6ab3b51"
+    "skills/brain-review/references/review-actions.md": "e0d0f71202011df5635cc0bb477754603ab55baafb201d8cbd84b6569459f816"
   }
 }

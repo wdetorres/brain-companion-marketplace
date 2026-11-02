@@ -17,9 +17,15 @@ The plugin connects to `https://brain.wilsondetorres.com/mcp` through your clien
 
 The application, MCP server and canonical skill source remain in [brain-companion](https://github.com/wdetorres/brain-companion).
 
+## Assessment and commit workflow
+
+Version `0.3.0` updates the four skills for source verification → `assess_memory` → agent decision → direct `remember`/`promote`. Jev supplies quality and lifecycle advice; its scores never veto an authorized write. Genuine uncertainty can use Inbox with a reason, while interrupted candidates remain shared assessment work. The existing authorized review job can resume ready exceptions without repeatedly reassessing unchanged evidence. Bounded `undo_memory` requires an owner reversal request or an already-authorized reversal task.
+
+**Release dependency:** deploy the matching Brain Companion backend exposing `assess_memory` and `undo_memory` before publishing/installing this package. Discover capabilities on the connected endpoint; a missing tool is an upgrade gap, not permission to bypass checks through local writes. This package does not deploy the backend, enable new action scopes, configure a scheduler or prove automatic pickup. See [validation and activation limits](docs/validation.md).
+
 ## Install the hosted bundle
 
-The public catalog contains `brain-workflows` version `0.2.1`: four skills plus the `brain-companion` MCP server.
+The public catalog contains `brain-workflows` version `0.3.0`: four skills plus the `brain-companion` MCP server.
 
 ```sh
 # Claude Code
