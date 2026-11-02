@@ -1,5 +1,16 @@
 # Package validation
 
+## Version 0.3.0 assessment workflow
+
+The four canonical skills and their reference files are copied byte-for-byte from application commit `6f6b97439092fde0c0942d7f6503789ae21f56fc`; `source.json` records the full revision and SHA-256 hashes of all ten distributed files. Both client manifests use `0.3.0`.
+
+Fresh checks passed: all three Python package tests, custom-endpoint generation at `dist/assess-commit-030`, and Claude strict validation of both repository manifests and both generated custom-bundle manifests. The tests cover source hashes, package isolation, manifest agreement, unchanged assets, endpoint validation and non-overwrite behavior. No additional live Jev calls were made.
+
+Deploy the matching backend with `assess_memory` and `undo_memory` before releasing or installing this package. This PR does not change installed client copies, source/action permissions, owner policy or existing scheduler prompts. Actual scheduled pickup, new authenticated client sessions and device sync remain separate rollout checks. The native discovery evidence below applies to the earlier package version; native `0.3.0` inventory and running-client reload were not rechecked here.
+
+## Earlier package evidence
+
+
 Checked November 2, 2026 with Python 3, Claude Code 2.1.301 and Codex CLI 0.162.1.
 
 ## Automated checks
