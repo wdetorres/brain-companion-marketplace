@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.configure import FILES, ROOT, build
+from scripts.configure import ASSETS, FILES, ROOT, build
 
 
 class PackagingTests(unittest.TestCase):
@@ -25,23 +25,35 @@ class PackagingTests(unittest.TestCase):
     def test_bundle_preserves_skills_and_configures_only_explicit_endpoint(self):
         self.build()
         plugin = "plugins/brain-companion"
-        expected = {f"{plugin}/{name}" for name in FILES} | {
+        expected = {f"{plugin}/{name}" for name in FILES + ASSETS} | {
             f"{plugin}/.claude-plugin/plugin.json", f"{plugin}/.mcp.json",
+            f"{plugin}/.codex-plugin/plugin.json",
             ".claude-plugin/marketplace.json", ".agents/plugins/marketplace.json",
         }
         actual = {path.relative_to(self.output).as_posix() for path in self.output.rglob("*") if path.is_file()}
         self.assertEqual(actual, expected)
         for name in actual:
             self.assertNotIn(b"brain.wilsondetorres.com", (self.output / name).read_bytes())
-        for name in FILES:
+        for name in FILES + ASSETS:
             self.assertEqual((self.output / plugin / name).read_bytes(), (ROOT / "plugins/brain-workflows" / name).read_bytes())
         manifest = json.loads((self.output / plugin / ".claude-plugin/plugin.json").read_text())
-        self.assertEqual(set(manifest), {"name", "version", "author", "description", "mcpServers"})
+        self.assertEqual(set(manifest), {"name", "version", "author", "description", "mcpServers", "icon"})
         self.assertEqual(manifest["mcpServers"], "./.mcp.json")
         self.assertEqual(json.loads((self.output / plugin / ".mcp.json").read_text()), {
             "mcpServers": {"brain-companion": {"type": "http", "url": "https://brain.example.invalid/mcp"}},
         })
         for root, name, target in [(ROOT, "brain-workflows", "plugins/brain-workflows"), (self.output, "brain-companion", plugin)]:
+            directory = root / target
+            plugin_manifest = json.loads((directory / ".claude-plugin/plugin.json").read_text())
+            codex_manifest = json.loads((directory / ".codex-plugin/plugin.json").read_text())
+            self.assertEqual({k: v for k, v in plugin_manifest.items() if k != "icon"},
+                             {k: v for k, v in codex_manifest.items() if k != "interface"})
+            self.assertEqual(plugin_manifest["icon"], "./assets/logo.png")
+            for field in ("logo", "composerIcon"):
+                self.assertEqual(codex_manifest["interface"][field], plugin_manifest["icon"])
+            logo = (directory / plugin_manifest["icon"]).read_bytes()
+            self.assertEqual(logo[:8], b"\x89PNG\r\n\x1a\n")
+            self.assertEqual(int.from_bytes(logo[16:20], "big"), int.from_bytes(logo[20:24], "big"))
             claude = json.loads((root / ".claude-plugin/marketplace.json").read_text())
             codex = json.loads((root / ".agents/plugins/marketplace.json").read_text())
             self.assertEqual(claude["name"], codex["name"])
@@ -70,13 +82,13 @@ class PackagingTests(unittest.TestCase):
         source = json.loads((ROOT / "source.json").read_text())
         self.assertEqual(set(source["files"]), set(FILES))
         directory = ROOT / "plugins/brain-workflows"
-        self.assertEqual({p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}, set(FILES) | {".claude-plugin/plugin.json", ".mcp.json"})
+        self.assertEqual({p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}, set(FILES + ASSETS) | {".claude-plugin/plugin.json", ".codex-plugin/plugin.json", ".mcp.json"})
         for name, digest in source["files"].items():
             content = (directory / name).read_bytes()
             self.assertEqual(hashlib.sha256(content).hexdigest(), digest)
             self.assertNotRegex(content.decode(), r"/Users/|/home/box|wilsondetorres|brain-harness|Bearer |AUTO_ACCEPT")
         manifest = json.loads((directory / ".claude-plugin/plugin.json").read_text())
-        self.assertEqual(set(manifest), {"name", "version", "author", "description", "mcpServers"})
+        self.assertEqual(set(manifest), {"name", "version", "author", "description", "mcpServers", "icon"})
         self.assertEqual(manifest["mcpServers"], "./.mcp.json")
         self.assertIn("Owner-only preview", manifest["description"])
         self.assertEqual(json.loads((directory / ".mcp.json").read_text()), {

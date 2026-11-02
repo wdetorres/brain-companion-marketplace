@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="plugins/brain-workflows/assets/logo.png" alt="Brain Companion logo" width="112" height="112">
+</p>
+
 # Brain Companion marketplace
 
 Four portable workflows bundled with the hosted [Brain Companion](https://brain.wilsondetorres.com) MCP:
@@ -15,7 +19,7 @@ The application, MCP server and canonical skill source remain in [brain-companio
 
 ## Install the hosted bundle
 
-The public catalog contains `brain-workflows` version `0.2.0`: four skills plus the `brain-companion` MCP server.
+The public catalog contains `brain-workflows` version `0.2.1`: four skills plus the `brain-companion` MCP server.
 
 ```sh
 # Claude Code
@@ -61,7 +65,7 @@ Installation, OAuth and successful tool calls are separate checks. In a fresh se
 
 ## Client support and hooks
 
-Claude Code and Codex package discovery are verified locally. This uses the [Claude-compatible manifest](https://code.claude.com/docs/en/plugins-reference) also supported by [Codex](https://developers.openai.com/plugins/build/plugins).
+Claude Code and Codex package discovery are verified locally. The [Claude manifest](https://code.claude.com/docs/en/plugins-reference) declares the listing icon; the [Codex compatibility manifest](https://developers.openai.com/plugins/build/plugins) adds the logo and composer icon. Both point to the same bundled asset and MCP configuration. Claude Code currently ignores listing icons at load time; its directory can use them when a plugin is submitted.
 
 [Grok Build documents Claude plugin compatibility](https://docs.x.ai/build/features/skills-plugins-marketplaces), but this repository has not been tested in Grok Build. Grok Bot uses its own [private-skill and connector flows](https://docs.x.ai/grok-bot/skills-routines-and-automations). ChatGPT and Claude Chat have separate import/connection flows; these CLI commands do not install there.
 

@@ -12,6 +12,7 @@ FILES = tuple(f"skills/{name}/{file}" for name in SKILLS for file in ("SKILL.md"
     "skills/brain-capture/references/write-outcomes.md",
     "skills/brain-review/references/review-actions.md",
 )
+ASSETS = ("assets/logo.png",)
 
 
 def endpoint(value: str) -> str:
@@ -35,21 +36,29 @@ def build(output: Path, mcp_url: str) -> None:
         raise FileExistsError("Choose a new output directory; existing packages are never overwritten")
     source = ROOT / "plugins/brain-workflows"
     manifest = json.loads((source / ".claude-plugin/plugin.json").read_text())
-    if set(manifest) != {"name", "version", "author", "description", "mcpServers"} or manifest["name"] != "brain-workflows" or manifest["mcpServers"] != "./.mcp.json":
+    if set(manifest) != {"name", "version", "author", "description", "mcpServers", "icon"} or manifest["name"] != "brain-workflows" or manifest["mcpServers"] != "./.mcp.json" or manifest["icon"] != "./assets/logo.png":
         raise ValueError("Review changed plugin metadata before exporting it")
+    codex = json.loads((source / ".codex-plugin/plugin.json").read_text())
+    if {k: v for k, v in codex.items() if k != "interface"} != {k: v for k, v in manifest.items() if k != "icon"}:
+        raise ValueError("Codex and Claude plugin metadata must agree")
     plugin = "plugins/brain-companion"
     entries = {}
-    for name in FILES:
+    for name in FILES + ASSETS:
         path = source / name
         if path.is_symlink() or path.resolve() != path or not path.is_file():
-            raise ValueError(f"Expected a regular skill file: {name}")
+            raise ValueError(f"Expected a regular package file: {name}")
         entries[f"{plugin}/{name}"] = path.read_bytes()
 
-    # shortcut: keep Claude-compatible metadata until portable MCP discovery passes in target clients.
+    custom_manifest = {
+        **manifest, "name": "brain-companion", "mcpServers": "./.mcp.json",
+        "description": "Four Brain workflows with your owner-authorized Brain Companion MCP connection.",
+    }
+    # shortcut: keep compatibility manifests until portable MCP discovery passes in target clients.
     configs = {
-        f"{plugin}/.claude-plugin/plugin.json": {
-            **manifest, "name": "brain-companion", "mcpServers": "./.mcp.json",
-            "description": "Four Brain workflows with your owner-authorized Brain Companion MCP connection.",
+        f"{plugin}/.claude-plugin/plugin.json": custom_manifest,
+        f"{plugin}/.codex-plugin/plugin.json": {
+            **{k: v for k, v in custom_manifest.items() if k != "icon"},
+            "interface": codex["interface"],
         },
         f"{plugin}/.mcp.json": {"mcpServers": {"brain-companion": {"type": "http", "url": mcp_url}}},
         ".claude-plugin/marketplace.json": {

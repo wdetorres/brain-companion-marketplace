@@ -1,0 +1,16 @@
+{
+  "name": "brain-workflows",
+  "version": "0.2.1",
+  "author": {
+    "name": "Brain Companion contributors"
+  },
+  "description": "Owner-only preview: four Brain workflows and the hosted Brain Companion MCP. Only the configured service owner can authenticate.",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Brain Companion",
+    "shortDescription": "Recall, capture, review and maintain your Brain.",
+    "brandColor": "#191919",
+    "composerIcon": "./assets/logo.png",
+    "logo": "./assets/logo.png"
+  }
+}
