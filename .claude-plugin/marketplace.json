@@ -1,0 +1,13 @@
+{
+  "name": "brain-companion",
+  "owner": {
+    "name": "Brain Companion contributors"
+  },
+  "description": "Portable Brain workflows for your own Brain Companion connection.",
+  "plugins": [
+    {
+      "name": "brain-workflows",
+      "source": "./plugins/brain-workflows"
+    }
+  ]
+}
